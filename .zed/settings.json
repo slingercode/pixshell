@@ -1,0 +1,17 @@
+{
+  "show_whitespaces": "selection",
+  "languages": {
+    "Go": {
+      "tab_size": 4
+    },
+    "Markdown": {
+      "tab_size": 2
+    },
+    "JSON": {
+      "tab_size": 2
+    },
+    "JSONC": {
+      "tab_size": 2
+    }
+  }
+}
