@@ -1,13 +1,12 @@
 package scenes
 
 import (
-	"fmt"
-
+	"github.com/slingercode/pixshell/internal/components"
 	"github.com/slingercode/pixshell/internal/state"
 )
 
 type Editor struct{}
 
-func (e *Editor) Render(state *state.State) string {
-	return fmt.Sprintf("Editor\n%s", state.Position.Print())
+func (e Editor) Render(s state.State) string {
+	return components.GridComponent(s)
 }

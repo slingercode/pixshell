@@ -2,18 +2,9 @@ package model
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 	"github.com/slingercode/pixshell/internal/scenes"
 	"github.com/slingercode/pixshell/internal/state"
 )
-
-var style = lipgloss.NewStyle().
-	Bold(true).
-	Foreground(lipgloss.Color("#FFFFFF")).
-	Background(lipgloss.Color("#7D56F4")).
-	PaddingTop(2).
-	PaddingLeft(4).
-	Width(22)
 
 type RenderModeEnum int
 
@@ -41,7 +32,7 @@ type Model struct {
 	State *state.State
 }
 
-func (m *Model) Init() tea.Cmd {
+func (m Model) Init() tea.Cmd {
 	return nil
 }
 
@@ -60,8 +51,6 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.RenderMode = Insert
 				m.Scene = Editor
 
-				m.State.Position.X++
-
 				return m, nil
 
 			case "ctrl+c", "q":
@@ -73,6 +62,36 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg := msg.(type) {
 		case tea.KeyMsg:
 			switch msg.String() {
+			case "enter":
+				m.State.SetCurrentColor()
+
+				return m, nil
+
+			case "backspace":
+				m.State.ClearColor()
+
+				return m, nil
+
+			case "h", "left":
+				m.State.UpdatePosition(state.Left)
+
+				return m, nil
+
+			case "j", "down":
+				m.State.UpdatePosition(state.Down)
+
+				return m, nil
+
+			case "k", "up":
+				m.State.UpdatePosition(state.Up)
+
+				return m, nil
+
+			case "l", "right":
+				m.State.UpdatePosition(state.Right)
+
+				return m, nil
+
 			case "q":
 				m.RenderMode = Normal
 				m.Scene = Dashboard
@@ -88,11 +107,29 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m *Model) View() string {
 	switch m.Scene {
 	case Dashboard:
-		return m.Scenes[Dashboard].Render(m.State)
+		return m.Scenes[Dashboard].Render(*m.State)
 
 	case Editor:
-		return m.Scenes[Editor].Render(m.State)
+		return m.Scenes[Editor].Render(*m.State)
 	}
 
 	return ""
+}
+
+func Init() Model {
+	state := state.Init()
+
+	dashboard := scenes.Dashboard{}
+	editor := scenes.Editor{}
+
+	scenes := make([]scenes.Scene, LenghtScenes)
+	scenes[Dashboard] = &dashboard
+	scenes[Editor] = &editor
+
+	return Model{
+		RenderMode: Insert,
+		Scene:      Editor,
+		Scenes:     scenes,
+		State:      &state,
+	}
 }

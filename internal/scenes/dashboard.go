@@ -8,6 +8,6 @@ import (
 
 type Dashboard struct{}
 
-func (d *Dashboard) Render(state *state.State) string {
-	return fmt.Sprintf("Dashboard\n%s", state.Position.Print())
+func (d Dashboard) Render(s state.State) string {
+	return fmt.Sprintf("Dashboard\n%s", s.Position.Print())
 }
