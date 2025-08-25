@@ -14,10 +14,17 @@ const (
 	Down
 )
 
+type Color = colorful.Color
+
+type Cell struct {
+	Color   Color
+	Cleared bool
+}
+
 type State struct {
 	Position     vectors.Vec2
-	CurrentColor colorful.Color
-	Grid         [][]colorful.Color
+	CurrentColor Color
+	Grid         [][]Cell
 	Rows         int
 	Columns      int
 }
@@ -59,20 +66,29 @@ func (s *State) UpdatePosition(mov PositionMovementEnum) {
 }
 
 func (s *State) SetCurrentColor() {
-	s.Grid[s.Position.X][s.Position.Y] = s.CurrentColor
+	s.Grid[s.Position.X][s.Position.Y].Cleared = false
+	s.Grid[s.Position.X][s.Position.Y].Color = s.CurrentColor
 }
 
 func (s *State) ClearColor() {
-	s.Grid[s.Position.X][s.Position.Y] = colorful.Color{R: 1.0, G: 1.0, B: 1.0}
+	s.Grid[s.Position.X][s.Position.Y].Cleared = true
+	s.Grid[s.Position.X][s.Position.Y].Color = colorful.Color{R: 1.0, G: 1.0, B: 1.0}
 }
 
-func generateGrid(rows, columns int) [][]colorful.Color {
-	grid := make([][]colorful.Color, columns)
+func InitClearCell() Cell {
+	return Cell{
+		Cleared: true,
+		Color:   Color{R: 1.0, G: 1.0, B: 1.0},
+	}
+}
+
+func generateGrid(rows, columns int) [][]Cell {
+	grid := make([][]Cell, columns)
 
 	for x := range columns {
-		grid[x] = make([]colorful.Color, rows)
+		grid[x] = make([]Cell, rows)
 		for y := range rows {
-			grid[x][y] = colorful.Color{R: 1.0, G: 1.0, B: 1.0}
+			grid[x][y] = InitClearCell()
 		}
 	}
 

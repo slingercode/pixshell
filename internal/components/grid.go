@@ -3,8 +3,6 @@ package components
 import (
 	"strings"
 
-	"github.com/charmbracelet/lipgloss"
-	"github.com/lucasb-eyer/go-colorful"
 	"github.com/slingercode/pixshell/internal/state"
 )
 
@@ -16,35 +14,11 @@ func GridComponent(s state.State) string {
 			cell := s.Grid[x][y]
 			isCurrentCell := x == s.Position.X && y == s.Position.Y
 
-			grid.WriteString(cellComponent(cell, isCurrentCell, s.CurrentColor))
+			grid.WriteString(CellComponent(cell, isCurrentCell, s.CurrentColor))
 		}
 
 		grid.WriteRune('\n')
 	}
 
 	return grid.String()
-}
-
-func cellComponent(cell colorful.Color, isCurrentCell bool, color colorful.Color) string {
-	cellRender := strings.Builder{}
-
-	if isCurrentCell {
-		cellRender.WriteString(
-			lipgloss.
-				NewStyle().
-				SetString(">X").
-				Foreground(lipgloss.Color(color.Hex())).
-				String(),
-		)
-	} else {
-		cellRender.WriteString(
-			lipgloss.
-				NewStyle().
-				Width(2).
-				Background(lipgloss.Color(cell.Hex())).
-				String(),
-		)
-	}
-
-	return cellRender.String()
 }
