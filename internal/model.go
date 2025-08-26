@@ -97,6 +97,9 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.Scene = Dashboard
 
 				return m, nil
+
+			case "ctrl+c":
+				return m, tea.Quit
 			}
 		}
 	}

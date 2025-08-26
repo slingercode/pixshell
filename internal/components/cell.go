@@ -1,31 +1,27 @@
 package components
 
 import (
-	"strings"
-
 	"github.com/charmbracelet/lipgloss"
 	"github.com/slingercode/pixshell/internal/state"
 )
 
-// TODO
-// var cellBorder = lipgloss.Border{
-// 	Top:         "─",
-// 	Bottom:      " ",
-// 	Left:        "│",
-// 	Right:       "│",
-// 	TopLeft:     "╭",
-// 	TopRight:    "╮",
-// 	BottomLeft:  "┘",
-// 	BottomRight: "└",
-// }
-//
-// Border(cellBorder, false).
-// BorderForeground(lipgloss.Color("#FFF"))
+var cellBorder = lipgloss.Border{
+	Top:         "─",
+	Bottom:      "─",
+	Left:        "│",
+	Right:       "│",
+	TopLeft:     "╭",
+	TopRight:    "╮",
+	BottomLeft:  "╰",
+	BottomRight: "╯",
+}
 
-func CellComponent(cell state.Cell, isCurrentCell bool, color state.Color) string {
-	cellRender := strings.Builder{}
-
-	cellStyle := lipgloss.NewStyle()
+func CellComponent(cell state.Cell, isCurrentCell bool, color state.Color) lipgloss.Style {
+	cellStyle := lipgloss.
+		NewStyle().
+		Width(2).
+		Border(cellBorder, true).
+		BorderForeground(lipgloss.Color("#FFF"))
 
 	// Add background color
 	if !cell.Cleared {
@@ -42,10 +38,8 @@ func CellComponent(cell state.Cell, isCurrentCell bool, color state.Color) strin
 			currentCellStyle = currentCellStyle.Foreground(lipgloss.Color(color.Hex()))
 		}
 
-		cellRender.WriteString(currentCellStyle.String())
-	} else {
-		cellRender.WriteString(cellStyle.Width(2).String())
+		cellStyle = currentCellStyle
 	}
 
-	return cellRender.String()
+	return cellStyle
 }

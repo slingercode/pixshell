@@ -37,7 +37,7 @@ func Init() State {
 
 	return State{
 		Grid:         generateGrid(rows, columns),
-		CurrentColor: colorful.Color{R: 135.0 / 255.0, G: 75.0 / 255.0, B: 253.0 / 255.0},
+		CurrentColor: initColor(135, 75, 253),
 		Position:     position,
 		Rows:         rows,
 		Columns:      columns,
@@ -71,14 +71,21 @@ func (s *State) SetCurrentColor() {
 }
 
 func (s *State) ClearColor() {
-	s.Grid[s.Position.X][s.Position.Y].Cleared = true
-	s.Grid[s.Position.X][s.Position.Y].Color = colorful.Color{R: 1.0, G: 1.0, B: 1.0}
+	s.Grid[s.Position.X][s.Position.Y] = initClearCell()
 }
 
-func InitClearCell() Cell {
+func initClearCell() Cell {
 	return Cell{
 		Cleared: true,
-		Color:   Color{R: 1.0, G: 1.0, B: 1.0},
+		Color:   initColor(255, 255, 255),
+	}
+}
+
+func initColor(r, g, b uint8) Color {
+	return Color{
+		R: float64(r) / 255.0,
+		G: float64(g) / 255.0,
+		B: float64(b) / 255.0,
 	}
 }
 
@@ -88,7 +95,7 @@ func generateGrid(rows, columns int) [][]Cell {
 	for x := range columns {
 		grid[x] = make([]Cell, rows)
 		for y := range rows {
-			grid[x][y] = InitClearCell()
+			grid[x][y] = initClearCell()
 		}
 	}
 

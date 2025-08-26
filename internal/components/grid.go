@@ -1,24 +1,26 @@
 package components
 
 import (
-	"strings"
-
+	"github.com/charmbracelet/lipgloss"
 	"github.com/slingercode/pixshell/internal/state"
 )
 
 func GridComponent(s state.State) string {
-	grid := strings.Builder{}
+	var gridRows []string
 
 	for y := range s.Columns {
+		var rowCellStrings []string
+
 		for x := range s.Rows {
 			cell := s.Grid[x][y]
 			isCurrentCell := x == s.Position.X && y == s.Position.Y
 
-			grid.WriteString(CellComponent(cell, isCurrentCell, s.CurrentColor))
+			cellStyle := CellComponent(cell, isCurrentCell, s.CurrentColor)
+			rowCellStrings = append(rowCellStrings, cellStyle.String())
 		}
 
-		grid.WriteRune('\n')
+		gridRows = append(gridRows, lipgloss.JoinHorizontal(lipgloss.Top, rowCellStrings...))
 	}
 
-	return grid.String()
+	return lipgloss.JoinVertical(lipgloss.Left, gridRows...)
 }
