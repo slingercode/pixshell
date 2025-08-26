@@ -5,23 +5,12 @@ import (
 	"github.com/slingercode/pixshell/internal/state"
 )
 
-var cellBorder = lipgloss.Border{
-	Top:         "─",
-	Bottom:      "─",
-	Left:        "│",
-	Right:       "│",
-	TopLeft:     "╭",
-	TopRight:    "╮",
-	BottomLeft:  "╰",
-	BottomRight: "╯",
-}
+const CELL_WIDTH = 2
 
-func CellComponent(cell state.Cell, isCurrentCell bool, color state.Color) lipgloss.Style {
+func CellComponent(cell state.Cell, isCurrentCell bool, color state.Color) string {
 	cellStyle := lipgloss.
 		NewStyle().
-		Width(2).
-		Border(cellBorder, true).
-		BorderForeground(lipgloss.Color("#FFF"))
+		Width(CELL_WIDTH)
 
 	// Add background color
 	if !cell.Cleared {
@@ -41,5 +30,5 @@ func CellComponent(cell state.Cell, isCurrentCell bool, color state.Color) lipgl
 		cellStyle = currentCellStyle
 	}
 
-	return cellStyle
+	return cellStyle.String()
 }

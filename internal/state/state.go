@@ -1,8 +1,9 @@
 package state
 
 import (
+	"fmt"
+
 	"github.com/lucasb-eyer/go-colorful"
-	"github.com/slingercode/pixshell/internal/vectors"
 )
 
 type PositionMovementEnum int
@@ -21,8 +22,21 @@ type Cell struct {
 	Cleared bool
 }
 
+type Position struct {
+	Row    int
+	Column int
+}
+
+func positionInit() Position {
+	return Position{Row: 0, Column: 0}
+}
+
+func (p *Position) Print() string {
+	return fmt.Sprintf("{Row: %d, Column: %d}", p.Row, p.Column)
+}
+
 type State struct {
-	Position     vectors.Vec2
+	Position     Position
 	CurrentColor Color
 	Grid         [][]Cell
 	Rows         int
@@ -33,7 +47,7 @@ func Init() State {
 	rows := 8
 	columns := 8
 
-	position := vectors.Vec2Init()
+	position := positionInit()
 
 	return State{
 		Grid:         generateGrid(rows, columns),
@@ -47,31 +61,34 @@ func Init() State {
 func (s *State) UpdatePosition(mov PositionMovementEnum) {
 	switch mov {
 	case Left:
-		if s.Position.X > 0 {
-			s.Position.X--
+		if s.Position.Column > 0 {
+			s.Position.Column--
 		}
+
 	case Up:
-		if s.Position.Y > 0 {
-			s.Position.Y--
+		if s.Position.Row > 0 {
+			s.Position.Row--
 		}
+
 	case Right:
-		if s.Position.X < s.Rows-1 {
-			s.Position.X++
+		if s.Position.Column < s.Columns-1 {
+			s.Position.Column++
 		}
+
 	case Down:
-		if s.Position.Y < s.Columns-1 {
-			s.Position.Y++
+		if s.Position.Row < s.Rows-1 {
+			s.Position.Row++
 		}
 	}
 }
 
 func (s *State) SetCurrentColor() {
-	s.Grid[s.Position.X][s.Position.Y].Cleared = false
-	s.Grid[s.Position.X][s.Position.Y].Color = s.CurrentColor
+	s.Grid[s.Position.Row][s.Position.Column].Cleared = false
+	s.Grid[s.Position.Row][s.Position.Column].Color = s.CurrentColor
 }
 
 func (s *State) ClearColor() {
-	s.Grid[s.Position.X][s.Position.Y] = initClearCell()
+	s.Grid[s.Position.Row][s.Position.Column] = initClearCell()
 }
 
 func initClearCell() Cell {
@@ -90,11 +107,11 @@ func initColor(r, g, b uint8) Color {
 }
 
 func generateGrid(rows, columns int) [][]Cell {
-	grid := make([][]Cell, columns)
+	grid := make([][]Cell, rows)
 
-	for x := range columns {
-		grid[x] = make([]Cell, rows)
-		for y := range rows {
+	for x := range rows {
+		grid[x] = make([]Cell, columns)
+		for y := range columns {
 			grid[x][y] = initClearCell()
 		}
 	}
